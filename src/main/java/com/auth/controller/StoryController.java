@@ -13,44 +13,44 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/stories")
 @AllArgsConstructor
 
 public class StoryController {
 
     private final StoryService storyService;
 
-    @PostMapping("/poststory")
+    @PostMapping("")
     @PreAuthorize("hasPermission(#storyRequestDto, 'CREATE_STORY')")
     public ResponseEntity<StoryRequestDto> postStory(@RequestBody StoryRequestDto storyRequestDto) {
         return new ResponseEntity<>(storyService.createStory(storyRequestDto), HttpStatus.CREATED);
     }
 
-    @GetMapping("/stories")
+    @GetMapping("")
     @PreAuthorize("hasPermission(filterObject, 'READ_STORY')")
     public ResponseEntity<Page<StoryResponseDto>> getAllStories(Pageable pageable) {
         return ResponseEntity.ok(storyService.getAllStories(pageable));
     }
 
-    @GetMapping("/stories/{id}")
-    @PreAuthorize("hasPermission(#id, 'READ_STORY')")
+    @GetMapping("/{id}")
+    @PreAuthorize("hasPermission(filterObject, 'READ_STORY')")
     public ResponseEntity<StoryResponseDto> getStoryById(@PathVariable long id) {
         return ResponseEntity.ok(storyService.getStoryById(id));
     }
 
-    @GetMapping("/search-story")
-    @PreAuthorize("hasPermission(#id, 'READ_STORY')")
+    @GetMapping("/search")
+    @PreAuthorize("hasPermission(filterObject, 'READ_STORY')")
     public ResponseEntity<Page<StoryResponseDto>> getStoriesByKeyword(Pageable pageable, @RequestParam String keyword) {
         return ResponseEntity.ok(storyService.getStoryByKeyword(pageable, keyword));
     }
 
-    @PutMapping("/stories/changestory/{id}")
+    @PutMapping("/{id}")
     @PreAuthorize("hasPermission(#storyRequestDto, 'UPDATE_STORY')")
     public ResponseEntity<StoryRequestDto> changeStory(@PathVariable long id, @RequestBody StoryRequestDto storyRequestDto, HttpServletRequest request) {
         return ResponseEntity.ok(storyService.changeStory(storyRequestDto, id, request));
     }
 
-    @DeleteMapping("/stories/{id}")
+    @DeleteMapping("/{id}")
     @PreAuthorize("hasPermission(#id, 'DELETE_STORY') || hasRole('SUPERADMIN')")
     public ResponseEntity<String> deleteStory(@PathVariable long id, HttpServletRequest request) {
         storyService.deleteStory(id, request);

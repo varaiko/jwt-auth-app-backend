@@ -28,20 +28,20 @@ public class RoleController {
         return ResponseEntity.ok(roles);
     }
 
-    @GetMapping("/search-role")
+    @GetMapping("/search")
     @PreAuthorize("hasRole('SUPERADMIN')")
     public ResponseEntity<Page<RoleRequestDto>> getRolesByKeyword(Pageable pageable, String keyword) {
         Page<RoleRequestDto> roles = roleService.getRolesByKeyword(pageable, keyword);
         return ResponseEntity.ok(roles);
     }
 
-    @PostMapping("/")
+    @PostMapping("")
     @PreAuthorize("hasRole('SUPERADMIN')")
     public ResponseEntity<RoleRequestDto> createNewRole(@Valid @RequestBody RoleRequestDto roleRequestDto) {
         return new ResponseEntity<>(roleService.createNewRole(roleRequestDto), HttpStatus.CREATED);
     }
 
-    @PostMapping("/{roleId}")
+    @PostMapping("/{roleId}/permissions")
     @PreAuthorize("hasRole('SUPERADMIN')")
     public ResponseEntity<RoleRequestDto> assignNewPermissionToRole(@PathVariable long roleId, @Valid @RequestBody RolePermissionsRequestDto rolePermissionsRequestDto) {
         return new ResponseEntity<>(roleService.assignNewPermission(roleId, rolePermissionsRequestDto), HttpStatus.OK);

@@ -33,31 +33,31 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/forgot-password")
+    @PostMapping("/password/forgot")
     public ResponseEntity<SimpleResponse> forgotPassword(@RequestBody ForgotPasswordRequestDto forgotPasswordRequestDto, HttpServletRequest request) {
         SimpleResponse authResponse = authService.generateForgotPasswordToken(forgotPasswordRequestDto.getEmail(), request);
         return ResponseEntity.ok(authResponse);
     }
 
-    @PostMapping("/reset-password")
+    @PostMapping("/password/reset")
     public ResponseEntity<SimpleResponse> resetPassword(@RequestBody ResetPasswordRequestDto resetPasswordRequestDto, HttpServletRequest request) {
         SimpleResponse response = authService.resetPassword(resetPasswordRequestDto, request);
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/verify-reset-token")
+    @PostMapping("/password/verify")
     public ResponseEntity<SimpleResponse> verifyResetToken(@RequestBody VerifyResetTokenRequestDto verifyResetTokenRequestDto, HttpServletRequest request) {
         SimpleResponse response = authService.verifyPasswordResetToken(verifyResetTokenRequestDto, request);
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/refresh-token")
+    @PostMapping("/token/refresh")
     public ResponseEntity<AuthResponseDto> refreshToken (HttpServletRequest request) {
         AuthResponseDto authResponse = jwtService.refreshToken(request);
         return ResponseEntity.ok(authResponse);
     }
 
-    @PostMapping("/verify-token")
+    @PostMapping("/token/verify")
     public ResponseEntity<?> verifyToken (HttpServletRequest request) {
         jwtService.verifyToken(request);
         return ResponseEntity.ok().build();

@@ -21,38 +21,38 @@ public class UserController {
         this.customUserDetailsService = customUserDetailsService;
     }
 
-    @GetMapping("/all-users")
+    @GetMapping("")
     @PreAuthorize("hasRole('SUPERADMIN')")
     public ResponseEntity<Page<UserResponseDto>> getAllUsers(Pageable pageable) {
         return ResponseEntity.ok(customUserDetailsService.getAllUsers(pageable));
     }
 
-    @GetMapping("/search-user")
+    @GetMapping("/search")
     @PreAuthorize("hasRole('SUPERADMIN')")
     public ResponseEntity<Page<UserResponseDto>> getUserBySearch(Pageable pageable, @RequestParam String keyword) {
         return ResponseEntity.ok(customUserDetailsService.getUserByKeyword(pageable, keyword));
     }
 
-    @GetMapping("/user-info/{id}")
+    @GetMapping("/{id}")
     @PreAuthorize("hasRole('SUPERADMIN')")
     public ResponseEntity<UserResponseDto> getUserInfoById(@PathVariable long id) {
         return ResponseEntity.ok(customUserDetailsService.getSpecificUser(id));
     }
 
-    @GetMapping("/user-info")
+    @GetMapping("/profile")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<UserResponseDto> getUserInfoWithToken(HttpServletRequest request) {
         return ResponseEntity.ok(customUserDetailsService.loadUserDetailsData(request));
     }
 
-    @DeleteMapping("/delete-user/{id}")
+    @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('SUPERADMIN')")
     public ResponseEntity<Void> deleteUser(@PathVariable long id) {
         customUserDetailsService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/update-user")
+    @PutMapping("/{id}")
     @PreAuthorize("hasRole('SUPERADMIN')")
     public ResponseEntity<UserResponseDto> updateUserData(@RequestBody UserResponseDto userResponseDto) {
         return new ResponseEntity<>(customUserDetailsService.updateUser(userResponseDto), HttpStatus.OK);
