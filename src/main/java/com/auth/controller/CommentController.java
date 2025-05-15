@@ -11,7 +11,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/stories/comments")
+@RequestMapping("/api/stories")
 public class CommentController {
 
     private final CommentService commentService;
@@ -20,25 +20,25 @@ public class CommentController {
         this.commentService = commentService;
     }
 
-    @PostMapping("/addcomment/{storyId}")
+    @PostMapping("/{storyId}/comments")
     @PreAuthorize("hasPermission(#storyId, 'CREATE_COMMENT')")
     public ResponseEntity<CommentRequestDto> createComment(@PathVariable long storyId, @Valid @RequestBody CommentRequestDto commentRequestDto) {
         return new ResponseEntity<>(commentService.addNewComment(storyId, commentRequestDto), HttpStatus.CREATED);
     }
 
-    @GetMapping("/{storyId}")
+    @GetMapping("/{storyId}/comments")
     @PreAuthorize("hasPermission(#storyId, 'READ_COMMENT')")
     public List<CommentRequestDto> getStoryComments(@PathVariable long storyId) {
         return commentService.getAllStoryComments(storyId);
     }
 
-    @PutMapping("/{storyId}/{commentId}")
+    @PutMapping("/{storyId}/comments/{commentId}")
     @PreAuthorize("hasPermission(#commentId, 'UPDATE_COMMENT')")
     public ResponseEntity<CommentRequestDto> updateComment(@PathVariable long storyId, @PathVariable long commentId, @Valid @RequestBody CommentRequestDto commentRequestDto, HttpServletRequest request) {
         return new ResponseEntity<>(commentService.changeComment(storyId, commentId, commentRequestDto, request), HttpStatus.OK);
     }
 
-    @DeleteMapping("/{commentId}")
+    @DeleteMapping("/comments/{commentId}")
     @PreAuthorize("hasPermission(#commentId, 'DELETE_COMMENT')")
     public ResponseEntity<String> deleteComment(@PathVariable long commentId, HttpServletRequest request) {
         commentService.deleteComment(commentId, request);
