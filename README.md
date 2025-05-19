@@ -61,12 +61,11 @@ spring.mail.host=<mail_host>
 spring.mail.port=<mail_port>
 spring.mail.username=<mail_username>
 spring.mail.password=<mail_password>
-```
 
-In `SecurityConstants.java`, set your JWT secret key:
-
-```java
-public static final String JWT_SECRET = "JWT_SECRET_KEY";
+# JWT configuration
+jwt.secret.key=<secret_key>
+jwt.token.access.expiration=<access_token_expiration>
+jwt.token.refresh.expiration=<refresh_token_expiration>
 ```
 
 ## Running the Application (Backend)
