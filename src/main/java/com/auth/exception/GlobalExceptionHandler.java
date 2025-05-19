@@ -85,7 +85,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ExceptionDto> handleAllExceptions(Exception ex, WebRequest request) {
         ExceptionDto dto = ExceptionDto.builder()
-                .message("An unexpected error occurred.")
+                .message("An unexpected error occurred. --- " + ex.getMessage())
                 .details(request.getDescription(false))
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())

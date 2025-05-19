@@ -7,7 +7,9 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
@@ -20,14 +22,23 @@ import java.util.Date;
 
 @Component
 @Slf4j
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class JwtGenerator {
 
     private final UserRepository userRepository;
 
+    @Value("${jwt.secret.key}")
+    private String jwtSecretKey;
+
+    @Value("${jwt.token.access.expiration}")
+    private long accessTokenExpiration;
+
+    @Value("${jwt.token.refresh.expiration}")
+    private long refreshTokenExpiration;
+
     private SecretKey getSignInKey() {
         byte[] bytes = Base64.getDecoder()
-                .decode(SecurityConstants.JWT_SECRET.getBytes(StandardCharsets.UTF_8));
+                .decode(jwtSecretKey.getBytes(StandardCharsets.UTF_8));
         return new SecretKeySpec(bytes, "HmacSHA512"); }
 
     public String generateToken(Authentication authentication) {
@@ -35,7 +46,7 @@ public class JwtGenerator {
         User user = userRepository.findByUsername(authentication.getName()).orElseThrow(() -> new UsernameNotFoundException("No user with email " + authentication.getName()));
 
         Date currentDate = new Date();
-        Date expiryDate = new Date(currentDate.getTime() + SecurityConstants.JWT_EXPIRATION);
+        Date expiryDate = new Date(currentDate.getTime() + accessTokenExpiration);
 
         String token = Jwts.builder()
                 .subject(String.valueOf(user.getId()))
@@ -49,7 +60,7 @@ public class JwtGenerator {
 
     public String generateTokenOnRefresh(User user) {
         Date currentDate = new Date();
-        Date expiryDate = new Date(currentDate.getTime() + SecurityConstants.JWT_EXPIRATION);
+        Date expiryDate = new Date(currentDate.getTime() + accessTokenExpiration);
 
         return Jwts.builder()
                 .subject(String.valueOf(user.getId()))
@@ -65,7 +76,7 @@ public class JwtGenerator {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("No user with email " + username));
 
         Date currentDate = new Date();
-        Date expiryDate = new Date(currentDate.getTime() + SecurityConstants.REFRESH_TOKEN_EXPIRATION);
+        Date expiryDate = new Date(currentDate.getTime() + refreshTokenExpiration);
 
         String token = Jwts.builder()
                 .subject(String.valueOf(user.getId()))
