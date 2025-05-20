@@ -90,19 +90,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        // Don’t run on ERROR dispatches
+
         if (request.getDispatcherType() == DispatcherType.ERROR) {
             return true;
         }
 
-        // Grab the servlet path (not including context path)
         String path = request.getServletPath();
 
-        // Skip all your auth routes:
         if (path.equals("/api/auth/login")
                 || path.equals("/api/auth/register")
-                || path.equals("/api/auth/verify-token")
-                || path.equals("/api/auth/refresh-token")) {
+                || path.equals("/api/auth/token/verify")
+                || path.equals("/api/auth/token/refresh")
+                || path.equals("/api/auth/password/verify")) {
             return true;
         }
 
